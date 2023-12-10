@@ -29,7 +29,9 @@ export class HomeComponent implements OnInit {
     //pipe è una funzione che permette di concatenare piu operatori al fine di produrre un nuovo observable
     const courses$: Observable<Course[]> = http$
       .pipe(
-        map(res => Object.values(res["payload"]))
+        tap(() => console.log('http request executed')), // genera dei side effects al di fuori della catena dell'observable
+        map(res => Object.values(res["payload"])),
+        shareReplay<Course[]>() // così la risposta viene passata ad ogni subscribtion senza che vengano fatte più richieste (in sintesi)
       )
 
     this.beginnerCourses$ = courses$
